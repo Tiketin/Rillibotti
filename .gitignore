@@ -1,0 +1,42 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+*.log.*
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Editor folders/files
+.vscode/
+.idea/
+*.swp
+
+# Build or cache directories (if any)
+dist/
+build/
+.cache/
+.tmp/
+
+# TypeScript build output (if using TS)
+*.tsbuildinfo
+
+# Optional: PM2 or other process manager logs
+pmlogs/
+pm2.log
