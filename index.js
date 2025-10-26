@@ -41,7 +41,8 @@ const {
     Collection,
     ActivityType,
     PresenceUpdateStatus,
-    Events
+    Events,
+    EmbedBuilder
 } = require('discord.js');
 
 const client = new Client({
@@ -84,9 +85,9 @@ client.once(Events.ClientReady, async () => {
     await deployCommands();
     console.log(`Commands deployed globally.`);
 
-    const statusType = process.env.BOT_STATUS || 'online';
-    const activityType = process.env.ACTIVITY_TYPE || 'PLAYING';
-    const activityName = process.env.ACTIVITY_NAME || 'Discord';
+    const statusType = process.env.BOT_STATUS || 'idle';
+    const activityType = process.env.ACTIVITY_TYPE || 'WATCHING';
+    const activityName = process.env.ACTIVITY_NAME || 'F1';
 
     const activityTypeMap = {
         'PLAYING': ActivityType.Playing,
@@ -115,6 +116,31 @@ client.once(Events.ClientReady, async () => {
     console.log(`Activity set to: ${activityType} ${activityName}`)
 });
 
+async function sendWelcomeMessage(member) {
+  const channelName = 'tervetuloa'; // 👈 change this to your channel name
+  const channel = member.guild.channels.cache.find(
+    (ch) => ch.name === channelName && ch.isTextBased()
+  );
+
+  if (!channel) {
+    console.error(`❌ Kanavaa "${channelName}" ei löytynyt.`);
+    return;
+  }
+
+  // Create an embed message
+  const embed = new EmbedBuilder()
+    .setColor('#f74907')
+    .setTitle(`${member.displayName} kurvasi lähtöruudukkoon!`)
+    .setDescription(`Tervetuloa Rillirouskujen F1 Podcast-palvelimelle!` + 
+        `\n Olet ${member.guild.memberCount - 1}. jäsen.`) //Member count - Bot
+    .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+    .setFooter({ text: `Liittynyt ${new Date().toLocaleDateString()}` });
+
+  await channel.send({ embeds: [embed] });
+}
+
+client.on('guildMemberAdd', sendWelcomeMessage);
+
 client.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isChatInputCommand()) return;
 
@@ -136,6 +162,13 @@ client.on(Events.InteractionCreate, async interaction => {
         }
     }
 });
+
+client.on('messageCreate', (message) => {
+  if (message.content === '!testwelcome') {
+    client.emit('guildMemberAdd', message.member);
+  }
+});
+
 
 
 client.login(process.env.BOT_TOKEN);
