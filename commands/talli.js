@@ -40,7 +40,7 @@ module.exports = {
 
     if (!role) {
       return interaction.reply({
-        content: `❌ Ei löytynyt tallia **${roleName}**.`,
+        content: `Ei löytynyt tallia **${roleName}**.`,
         flags: MessageFlags.Ephemeral
       });
     }
@@ -48,14 +48,14 @@ module.exports = {
     // Ensure role is in the allowed list (it always will be, but safety check)
     if (!teams.includes(role.name)) {
       return interaction.reply({
-        content: `🚫 **${role.name}** ei ole sallittu.`,
+        content: `**${role.name}** ei ole sallittu.`,
         flags: MessageFlags.Ephemeral
       });
     }
 
     if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles)) {
       return interaction.reply({
-        content: '⚠️ Voi ei, minulla ei ole lupaa päivittää rooleja!',
+        content: 'Voi ei, minulla ei ole lupaa päivittää rooleja!',
         flags: MessageFlags.Ephemeral
       });
     }
@@ -73,13 +73,13 @@ module.exports = {
         await member.roles.remove(roles);
         await member.roles.add(role);
         await interaction.reply({
-        content: `✅ **${member.displayName}** liittyi talliin **${role.name}**!`,
+        content: `**${member.displayName}** liittyi talliin **${role.name}**!`,
         flags: MessageFlags.Ephemeral
       });
     } catch (error) {
       console.error(error);
       await interaction.reply({
-        content: '❌ Jotain meni pieleen tallin määrittämisessä.',
+        content: 'Jotain meni pieleen tallin määrittämisessä.',
         flags: MessageFlags.Ephemeral
       });
     }
