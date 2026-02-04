@@ -7,7 +7,7 @@ const teams = [
   'Mercedes',
   'Alpine',
   'McLaren',
-  'Sauber',
+  'Audi',
   'Aston Martin',
   'Haas',
   'Racing Bullshit',
@@ -17,7 +17,7 @@ const teams = [
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('talli')
+    .setName('liitytalliin')
     .setDescription('Liity haluamaasi talliin!')
     .addStringOption(option => {
       option.setName('talli')
@@ -40,7 +40,7 @@ module.exports = {
 
     if (!role) {
       return interaction.reply({
-        content: `❌ Ei löytynyt tallia **${roleName}**.`,
+        content: `Ei löytynyt tallia **${roleName}**.`,
         flags: MessageFlags.Ephemeral
       });
     }
@@ -48,14 +48,14 @@ module.exports = {
     // Ensure role is in the allowed list (it always will be, but safety check)
     if (!teams.includes(role.name)) {
       return interaction.reply({
-        content: `🚫 **${role.name}** ei ole sallittu.`,
+        content: `**${role.name}** ei ole sallittu.`,
         flags: MessageFlags.Ephemeral
       });
     }
 
     if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles)) {
       return interaction.reply({
-        content: '⚠️ Voi ei, minulla ei ole lupaa päivittää rooleja!',
+        content: 'Voi ei, minulla ei ole lupaa päivittää rooleja!',
         flags: MessageFlags.Ephemeral
       });
     }
@@ -69,17 +69,19 @@ module.exports = {
         const roles = member.roles.cache
             .filter(role => !excludedRoles.includes(role.name)) // Exclude the default @everyone role
             .map(role => role);
-        console.log(`Jäsenen roolit: ${roleNames}`);
+        console.log(`Jäsenen edelliset roolit: ${roleNames}...`);
         await member.roles.remove(roles);
+        console.log(`poistettu.`);
         await member.roles.add(role);
+        console.log(`Jäsen lisätty rooliin ${role.name}.`);
         await interaction.reply({
-        content: `✅ **${member.displayName}** liittyi talliin **${role.name}**!`,
+        content: `**${member.displayName}** liittyi talliin **${role.name}**!`,
         flags: MessageFlags.Ephemeral
       });
     } catch (error) {
       console.error(error);
       await interaction.reply({
-        content: '❌ Jotain meni pieleen tallin määrittämisessä.',
+        content: 'Jotain meni pieleen tallin määrittämisessä.',
         flags: MessageFlags.Ephemeral
       });
     }

@@ -40,3 +40,6 @@ build/
 # Optional: PM2 or other process manager logs
 pmlogs/
 pm2.log
+
+# Downloaded responses
+data/
