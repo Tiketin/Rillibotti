@@ -1,7 +1,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
-const { REST, Routes } = require('discord.js');
+const { REST, Routes, Client, GatewayIntentBits, Partials, Collection, ActivityType, PresenceUpdateStatus, Events, EmbedBuilder } = require('discord.js');
 
 const deployCommands = async () => {
     try {
@@ -33,17 +33,6 @@ const deployCommands = async () => {
         console.error('Error deploying commands:', error)
     }
 }
-
-const { 
-    Client, 
-    GatewayIntentBits, 
-    Partials, 
-    Collection,
-    ActivityType,
-    PresenceUpdateStatus,
-    Events,
-    EmbedBuilder
-} = require('discord.js');
 
 const client = new Client({
     intents: [
@@ -163,11 +152,11 @@ client.on(Events.InteractionCreate, async interaction => {
     }
 });
 
-client.on('messageCreate', (message) => {
+/*client.on('messageCreate', (message) => {
   if (message.content === '!testwelcome') {
     client.emit('guildMemberAdd', message.member);
   }
-});
+});*/
 
 
 

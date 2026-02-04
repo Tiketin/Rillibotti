@@ -17,7 +17,7 @@ const teams = [
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('talli')
+    .setName('liitytalliin')
     .setDescription('Liity haluamaasi talliin!')
     .addStringOption(option => {
       option.setName('talli')
@@ -69,9 +69,11 @@ module.exports = {
         const roles = member.roles.cache
             .filter(role => !excludedRoles.includes(role.name)) // Exclude the default @everyone role
             .map(role => role);
-        console.log(`Jäsenen roolit: ${roleNames}`);
+        console.log(`Jäsenen edelliset roolit: ${roleNames}...`);
         await member.roles.remove(roles);
+        console.log(`poistettu.`);
         await member.roles.add(role);
+        console.log(`Jäsen lisätty rooliin ${role.name}.`);
         await interaction.reply({
         content: `**${member.displayName}** liittyi talliin **${role.name}**!`,
         flags: MessageFlags.Ephemeral
