@@ -7,7 +7,7 @@ const teams = [
   'Mercedes',
   'Alpine',
   'McLaren',
-  'Sauber',
+  'Audi',
   'Aston Martin',
   'Haas',
   'Racing Bullshit',

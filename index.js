@@ -117,13 +117,13 @@ client.once(Events.ClientReady, async () => {
 });
 
 async function sendWelcomeMessage(member) {
-  const channelName = 'tervetuloa'; // 👈 change this to your channel name
+  const channelName = 'tervetuloa';
   const channel = member.guild.channels.cache.find(
     (ch) => ch.name === channelName && ch.isTextBased()
   );
 
   if (!channel) {
-    console.error(`❌ Kanavaa "${channelName}" ei löytynyt.`);
+    console.error(`Kanavaa "${channelName}" ei löytynyt.`);
     return;
   }
 
