@@ -7,28 +7,27 @@ export async function getDriverStandings(year) {
     if (savedResponse != null) {
         console.log(`Haetaan vuoden ${year} kuljettajien tulokset tiedostosta.`);
         const responseStandingsList = savedResponse.MRData?.StandingsTable?.StandingsLists || [];
-        return responseStandingsList[0].DriverStandings;
+        return responseStandingsList[0];
     }
 
     try {
-        const url = 'https://api.jolpi.ca/ergast/f1/'+ year +'/driverstandings/';
-        console.log('Api call with url: '+url);
+        const url = `https://api.jolpi.ca/ergast/f1/${year}/driverstandings/`;
+        console.log('Rajapintakutsu: '+url);
 
         const res = await fetch(url);
         if (!res.ok) {
-        console.error(`HTTP error! status: ${res.status}`);
+        console.error(`HTTP-virhe! Status: ${res.status}`);
         return null;
         }
 
         const data = await res.json();
 
-        // Navigate to the driver standings array
         const standingsList = data.MRData?.StandingsTable?.StandingsLists || [];
         if (standingsList.length === 0) return [];
         await saveStandingsToFile(data, 'drivers', year);
-        return standingsList[0].DriverStandings;
+        return standingsList[0];
     } catch (err) {
-        console.error('Fetch failed:', err);
+        console.error('Haku epäonnistui:', err);
         return null;
     }
 }
@@ -40,32 +39,36 @@ export async function getConstructorStandings(year) {
     if (savedResponse != null) {
         console.log(`Haetaan vuoden ${year} valmistajien tulokset tiedostosta.`);
         const responseStandingsList = savedResponse.MRData?.StandingsTable?.StandingsLists || [];
-        return responseStandingsList[0].ConstructorStandings;
+        return responseStandingsList[0];
     }
 
     try {
-        const url = 'https://api.jolpi.ca/ergast/f1/'+ year +'/constructorstandings/';
-        console.log('Api call with url: '+url);
+        const url = `https://api.jolpi.ca/ergast/f1/${year}/constructorstandings/`;
+        console.log('Rajapintakutsu: '+url);
         const res = await fetch(url);
         if (!res.ok) {
-            console.error(`HTTP error! status: ${res.status}`);
+            console.error(`HTTP-virhe! Status: ${res.status}`);
             return null;
         }
 
         const data = await res.json();
 
-        // Navigate to the constructor standings
         const standingsList = data.MRData?.StandingsTable?.StandingsLists || [];
         if (standingsList.length === 0) return [];
         await saveStandingsToFile(data, 'constructors', year);
-        return standingsList[0].ConstructorStandings;
+        return standingsList[0];
     } catch (err) {
-        console.error('Fetch failed:', err);
+        console.error('Haku epäonnistui:', err);
         return null;
     }
 }
 
 async function saveStandingsToFile(data, championship, year) {
+    const currentYear = new Date().getFullYear();
+    if (year === currentYear) {
+        console.log('Kuluvan vuoden tuloksia ei tallenneta tiedostoon.');
+        return;
+    }
     const dirPath = `./data/championships/${championship}`;
     const filePath = dirPath+`/${year}.json`
 
@@ -74,6 +77,11 @@ async function saveStandingsToFile(data, championship, year) {
 }
 
 async function readStandingsFromFile(championship, year) {
+    const currentYear = new Date().getFullYear();
+    if (year === currentYear) {
+        console.log('Kuluvan vuoden tulokset haetaan aina rajapinnasta.');
+        return null;
+    }
     const filePath = `./data/championships/${championship}/${year}.json`
 
     try {
