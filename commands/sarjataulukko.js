@@ -76,7 +76,7 @@ module.exports = {
                 // Use editReply for the first part if you haven't sent anything yet, 
                 // or followUp if you already cleared the initial defer.
                 if (interaction.deferred || interaction.replied) {
-                    await interaction.followUp(currentMessage + '```');
+                    await interaction.followUp({content: currentMessage + '```', flags: MessageFlags.Ephemeral});
                 } else {
                     await interaction.reply(currentMessage + '```');
                 }
@@ -121,7 +121,7 @@ module.exports = {
                 // Use editReply for the first part if you haven't sent anything yet, 
                 // or followUp if you already cleared the initial defer.
                 if (interaction.deferred || interaction.replied) {
-                    await interaction.followUp(currentMessage + '```');
+                    await interaction.followUp({content: currentMessage + '```', flags: MessageFlags.Ephemeral});
                 } else {
                     await interaction.reply(currentMessage + '```');
                 }
