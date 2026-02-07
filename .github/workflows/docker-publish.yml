@@ -26,5 +26,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/rillibotti:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/rillibotti:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/tiketin:rillibotti-latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/tiketin:rillibotti-${{ github.sha }}
