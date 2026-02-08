@@ -25,7 +25,7 @@ export default {
         }),
 
     async execute(interaction) {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
         const championship = interaction.options.getString('mestaruus');
         let year = interaction.options.getInteger('vuosi');
         if (year == null) {
