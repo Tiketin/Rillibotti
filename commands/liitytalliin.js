@@ -32,6 +32,7 @@ module.exports = {
   async execute(interaction) {
     const roleName = interaction.options.getString('talli');
     const member = interaction.member;
+    console.log(`/liitytalliin, ${roleName}, ${member.displayName}`);
 
     // Find the matching role by name
     const role = interaction.guild.roles.cache.find(
