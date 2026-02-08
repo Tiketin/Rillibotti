@@ -34,13 +34,14 @@ module.exports = {
         }
         
         if (championship === 'k') {
+            console.log('/tiiviit-tulokset, kuljettajat, ' + year);
             const standings = await getDriverStandings(year);
-            const driverStandings = standings.DriverStandings;
 
-            if (driverStandings.length === 0) {
+            if (standings.length === 0) {
                 await interaction.editReply(`Tuloksia kaudelle ${year} ei ole saatavilla.`);
             }
             else {
+                const driverStandings = standings.DriverStandings;
                 const header = 'Kausi ' + year + '\n\n' +
                     '#   Kuljettaja     Pisteet Voitot\n\n';
 
@@ -83,13 +84,14 @@ module.exports = {
             }
         }
         else if (championship === 't') {
+            console.log('/tiiviit-tulokset, tallit, ' + year);
             const standings = await getConstructorStandings(year);
-            const constructorStandings = standings.ConstructorStandings;
 
-            if (constructorStandings.length === 0) {
+            if (standings.length === 0) {
                 await interaction.editReply(`Tuloksia kaudelle ${year} ei ole saatavilla.`);
             }
             else {
+                const constructorStandings = standings.ConstructorStandings;
                 const header = 'Kausi ' + year + '\n\n' +
                     '#   Talli         Pisteet  Voitot\n\n';
 

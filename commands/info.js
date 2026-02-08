@@ -7,6 +7,7 @@ module.exports = {
         .setDescription('Tietoa Rillibotista.'),
 
     async execute(interaction) {
+        console.log('/info');
         const start = Date.now();
 
         await interaction.reply({
