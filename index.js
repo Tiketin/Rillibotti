@@ -12,7 +12,8 @@ import {
   ActivityType, 
   PresenceUpdateStatus, 
   Events, 
-  EmbedBuilder 
+  EmbedBuilder,
+  MessageFlags
 } from 'discord.js';
 
 // Since __dirname is not available in ESM, define it manually:
@@ -161,9 +162,9 @@ client.on(Events.InteractionCreate, async interaction => {
     } catch (error) {
         console.error(error);
         if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({ content: 'Virhe komentoa suoritettaessa!', ephemeral: true});
+            await interaction.followUp({ content: 'Virhe komentoa suoritettaessa!', flags: [MessageFlags.Ephemeral]});
         } else {
-            await interaction.reply({ content: 'Virhe komentoa suoritettaessa!', ephemeral: true});
+            await interaction.reply({ content: 'Virhe komentoa suoritettaessa!', flags: [MessageFlags.Ephemeral]});
         }
     }
 });
