@@ -1,18 +1,59 @@
 name: Build and Push Docker Image
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-and-push:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Determine version bump type
+        id: bump
+        run: |
+          BRANCH="${{ github.event.pull_request.head.ref }}"
+
+          if [[ "$BRANCH" == fix/* ]]; then
+            echo "type=patch" >> $GITHUB_OUTPUT
+          elif [[ "$BRANCH" == feat/* ]]; then
+            echo "type=minor" >> $GITHUB_OUTPUT
+          else
+            echo "type=none" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Bump version
+        id: version
+        if: steps.bump.outputs.type != 'none'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          npm version ${{ steps.bump.outputs.type }}
+
+          echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Push version commit and tag
+        if: steps.bump.outputs.type != 'none'
+        run: |
+          git push --follow-tags
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -21,10 +62,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
+        if: steps.bump.outputs.type != 'none'
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/tiketin:rillibotti-latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/tiketin:rillibotti-${{ steps.version.outputs.version }}
             ${{ secrets.DOCKERHUB_USERNAME }}/tiketin:rillibotti-${{ github.sha }}
