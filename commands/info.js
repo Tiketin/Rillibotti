@@ -1,7 +1,8 @@
-const { SlashCommandBuilder, MessageFlags } = require('discord.js');
-const { version } = require('../package.json');
+import { SlashCommandBuilder, MessageFlags } from 'discord.js';
+import pkg from '../package.json' with { type: 'json' };
+const { version } = pkg;
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('info')
         .setDescription('Tietoa Rillibotista.'),

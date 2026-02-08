@@ -1,7 +1,23 @@
-require('dotenv').config();
-const fs = require('fs');
-const path = require('path');
-const { REST, Routes, Client, GatewayIntentBits, Partials, Collection, ActivityType, PresenceUpdateStatus, Events, EmbedBuilder } = require('discord.js');
+import 'dotenv/config';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { 
+  REST, 
+  Routes, 
+  Client, 
+  GatewayIntentBits, 
+  Partials, 
+  Collection, 
+  ActivityType, 
+  PresenceUpdateStatus, 
+  Events, 
+  EmbedBuilder 
+} from 'discord.js';
+
+// Since __dirname is not available in ESM, define it manually:
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const deployCommands = async () => {
     try {
@@ -10,7 +26,7 @@ const deployCommands = async () => {
         const commandFiles = fs.readdirSync(path.join(__dirname, 'commands')).filter(file => file.endsWith('.js'));
 
         for (const file of commandFiles) {
-            const command = require(`./commands/${file}`);
+            const { default: command } = await import(`./commands/${file}`);
             if ('data' in command && 'execute' in command) {
                 commands.push(command.data.toJSON());
             } else {
@@ -58,7 +74,7 @@ const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('
 
 for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
+    const { default: command } = await import(`file://${filePath}`);
 
     if ('data' in command && 'execute' in command) {
         client.commands.set(command.data.name, command);

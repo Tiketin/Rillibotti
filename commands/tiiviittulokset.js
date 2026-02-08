@@ -1,9 +1,8 @@
-const { SlashCommandBuilder, MessageFlags } = require('discord.js');
-const { version } = require('../package.json');
-const { getDriverStandings, getConstructorStandings } = require('../logic/f1api.js');
+import { SlashCommandBuilder, MessageFlags } from 'discord.js';
+import { getDriverStandings, getConstructorStandings } from '../logic/f1api.js';
 const currentYear = new Date().getFullYear();
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('tiiviit-tulokset')
         .setDescription('Hae tiivistetyt tulokset kaudelle...')
