@@ -11,6 +11,10 @@ RUN npm ci --only=production
 # Copy rest of the source
 COPY . .
 
+# Create data dir and fix ownership BEFORE switching user
+RUN mkdir -p /app/data \
+    && chown -R node:node /app
+
 # Switch to non-root user
 USER node
 
