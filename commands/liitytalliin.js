@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
+import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from 'discord.js';
 
 // Define your teams once — single source of truth
 const teams = [
@@ -15,7 +15,7 @@ const teams = [
   'Cadillac'
 ];
 
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName('liitytalliin')
     .setDescription('Liity haluamaasi talliin!')
