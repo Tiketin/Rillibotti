@@ -11,6 +11,9 @@ RUN npm ci --only=production
 # Copy rest of the source
 COPY . .
 
+# Switch to non-root user
+USER node
+
 # Discord bots don't need exposed ports, but harmless if present
 # EXPOSE 3000
 
