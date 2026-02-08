@@ -5,10 +5,10 @@ const currentYear = new Date().getFullYear();
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('sarjataulukko')
-        .setDescription('Hae pisteet kaudelle...')
+        .setName('tulokset')
+        .setDescription('Hae tulokset kaudelle...')
         .addStringOption(option => {
-            option.setName('sarja')
+            option.setName('mestaruus')
             .setDescription('Valitse kumman sarjataulukon haluat nähdä!')
             .setRequired(true);
 
@@ -27,7 +27,7 @@ module.exports = {
 
     async execute(interaction) {
         await interaction.deferReply({ ephemeral: true });
-        const championship = interaction.options.getString('sarja');
+        const championship = interaction.options.getString('mestaruus');
         let year = interaction.options.getInteger('vuosi');
         if (year == null) {
             year = currentYear;
@@ -42,10 +42,14 @@ module.exports = {
             }
             else {
                 const header = 'Kuljettajien mestaruus kaudella ' + year + ', osakilpailuja '+standings.round + '\n\n' +
-                    '#    Kuljettaja                    Pisteet    Voitot    Talli\n\n';
+                    '#   Kuljettaja                    Pisteet    Voitot    Talli\n\n';
 
                 const rows = driverStandings.map(d => {
-                const pos = (d.position ?? d.positionText ?? '-').padEnd(5);
+                let pos = (d.position ?? d.positionText ?? '-');
+                if (pos !== '-') {
+                    pos = pos + '.';
+                }
+                pos = pos.padEnd(4);
                 const name = (d.Driver.givenName + ' ' + d.Driver.familyName).padEnd(30);
                 const pts = d.points.padStart(6).padEnd(10);
                 const wins = d.wins.padStart(5).padEnd(10);
@@ -91,10 +95,14 @@ module.exports = {
             }
             else {
                 const header = 'Valmistajien mestaruus kaudella ' + year + ', osakilpailuja '+standings.round+'\n\n' +
-                    '#    Talli             Pisteet    Voitot\n\n';
+                    '#   Talli             Pisteet    Voitot\n\n';
 
                 const rows = constructorStandings.map(c => {
-                const pos = (c.position ?? c.positionText ?? '-').padEnd(5);
+                let pos = (c.position ?? c.positionText ?? '-');
+                if (pos !== '-') {
+                    pos = pos + '.';
+                }
+                pos = pos.padEnd(4);
                 const name = c.Constructor.name.padEnd(18);
                 const pts = c.points.padStart(6).padEnd(10);
                 const wins = c.wins.padStart(5);
