@@ -1,19 +1,7 @@
 import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from 'discord.js';
+import { getTeams } from '../logic/getteams.js';
 
-// Define your teams once — single source of truth
-const teams = [
-  'Red Bull',
-  'Ferrari',
-  'Mercedes',
-  'Alpine',
-  'McLaren',
-  'Audi',
-  'Aston Martin',
-  'Haas',
-  'Racing Bullshit',
-  'Williams',
-  'Cadillac'
-];
+const teams = getTeams();
 
 export default {
   data: new SlashCommandBuilder()
@@ -46,17 +34,17 @@ export default {
       });
     }
 
-    // Ensure role is in the allowed list (it always will be, but safety check)
-    if (!teams.includes(role.name)) {
+    if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles)) {
       return interaction.reply({
-        content: `**${role.name}** ei ole sallittu.`,
+        content: 'Voi ei, minulla ei ole lupaa päivittää rooleja!',
         flags: MessageFlags.Ephemeral
       });
     }
 
-    if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles)) {
+    // Ensure role is in the allowed list (it always will be, but safety check)
+    if (!teams.includes(role.name)) {
       return interaction.reply({
-        content: 'Voi ei, minulla ei ole lupaa päivittää rooleja!',
+        content: `**${role.name}** ei ole sallittu.`,
         flags: MessageFlags.Ephemeral
       });
     }
@@ -88,3 +76,4 @@ export default {
     }
   },
 };
+
