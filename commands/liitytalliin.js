@@ -17,6 +17,20 @@ export default {
       return option;
     }),
 
+    // This handles the live searching as the user types
+  async autocomplete(interaction) {
+    const focusedValue = interaction.options.getFocused();
+    const teams = getTeams();
+    
+    const filtered = teams.filter(choice => 
+      choice.toLowerCase().includes(focusedValue.toLowerCase())
+    );
+
+    await interaction.respond(
+      filtered.map(choice => ({ name: choice, value: choice })).slice(0, 25)
+    );
+  },
+
   async execute(interaction) {
     const roleName = interaction.options.getString('talli');
     const member = interaction.member;
