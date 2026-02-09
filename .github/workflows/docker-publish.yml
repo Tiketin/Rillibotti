@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 
 on:
   pull_request:
-    types: [closed]
+    types: [opened, synchronize, reopened, ready_for_review, closed]
     branches:
       - main
   workflow_dispatch:
@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   test:
+    if: github.event.action != 'closed' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,8 +47,10 @@ jobs:
             echo "type=patch" >> $GITHUB_OUTPUT
           elif [[ "$BRANCH" == feat/* ]]; then
             echo "type=minor" >> $GITHUB_OUTPUT
+          elif [[ "$BRANCH" == epic/* ]]; then
+            echo "type=major" >> $GITHUB_OUTPUT
           else
-            echo "type=none" >> $GITHUB_OUTPUT
+            echo "type=patch" >> $GITHUB_OUTPUT
           fi
 
       - name: Bump version
