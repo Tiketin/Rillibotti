@@ -20,7 +20,7 @@ export default {
 
         const pingTime = Date.now() - start;
 
-        if(isDebugEnabled) {
+        if(isDebugEnabled()) {
             const timestamp = new Date().toLocaleString();
             await interaction.editReply({
                 content: `Rillibotin versio: ${version}\n\n`+
