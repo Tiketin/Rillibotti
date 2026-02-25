@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from 'discord.js';
-import { getTeams } from '../logic/getteams.js';
+import { getTeams } from '../logic/configuration.js';
+import { logCommand } from '../logic/logger.js';
 
 const teams = getTeams();
 
@@ -34,7 +35,7 @@ export default {
   async execute(interaction) {
     const roleName = interaction.options.getString('talli');
     const member = interaction.member;
-    console.log(`/liitytalliin, ${roleName}, ${member.displayName}`);
+    logCommand(interaction, `/liitytalliin, ${roleName}`);
 
     // Find the matching role by name
     const role = interaction.guild.roles.cache.find(
@@ -72,11 +73,11 @@ export default {
         const roles = member.roles.cache
             .filter(role => !excludedRoles.includes(role.name)) // Exclude the default @everyone role
             .map(role => role);
-        console.log(`Jäsenen edelliset roolit: ${roleNames}...`);
+        logCommand(interaction, `Jäsenen edelliset roolit: ${roleNames}...`);
         await member.roles.remove(roles);
-        console.log(`poistettu.`);
+        logCommand(interaction, 'poistettu.');
         await member.roles.add(role);
-        console.log(`Jäsen lisätty rooliin ${role.name}.`);
+        logCommand(interaction, `Jäsen lisätty rooliin ${role.name}.`);
         await interaction.reply({
         content: `**${member.displayName}** liittyi talliin **${role.name}**!`,
         flags: MessageFlags.Ephemeral

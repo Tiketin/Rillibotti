@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, MessageFlags } from 'discord.js';
 import { getDriverStandings, getConstructorStandings } from '../logic/f1api.js';
+import { logCommand } from '../logic/logger.js';
 const currentYear = new Date().getFullYear();
 
 export default {
@@ -33,7 +34,7 @@ export default {
         }
         
         if (championship === 'k') {
-            console.log('/tiiviit-tulokset, kuljettajat, ' + year);
+            logCommand(interaction, `/tiiviit-tulokset, kuljettajat, ${year}`);
             const standings = await getDriverStandings(year);
 
             if (standings.length === 0) {
@@ -83,7 +84,7 @@ export default {
             }
         }
         else if (championship === 't') {
-            console.log('/tiiviit-tulokset, tallit, ' + year);
+            logCommand(interaction, `/tiiviit-tulokset, tallit, ${year}`);
             const standings = await getConstructorStandings(year);
 
             if (standings.length === 0) {

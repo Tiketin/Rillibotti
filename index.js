@@ -15,6 +15,7 @@ import {
   EmbedBuilder,
   MessageFlags
 } from 'discord.js';
+import { isDebugEnabled } from './logic/configuration.js';
 
 // Since __dirname is not available in ESM, define it manually:
 const __filename = fileURLToPath(import.meta.url);
@@ -169,11 +170,13 @@ client.on(Events.InteractionCreate, async interaction => {
     }
 });
 
-/*client.on('messageCreate', (message) => {
-  if (message.content === '!testwelcome') {
-    client.emit('guildMemberAdd', message.member);
-  }
-});*/
+client.on('messageCreate', (message) => {
+    const debug = isDebugEnabled();
+    console.log('!testwelcome called, debugging is ' + debug);
+    if (debug && message.content === '!testwelcome') {
+        client.emit('guildMemberAdd', message.member);
+    }
+});
 
 
 
