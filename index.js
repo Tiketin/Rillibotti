@@ -16,6 +16,7 @@ import {
   MessageFlags
 } from 'discord.js';
 import { isDebugEnabled } from './logic/configuration.js';
+import { logBackend, logError, logErrorWithoutCode } from './logic/logger.js';
 
 // Since __dirname is not available in ESM, define it manually:
 const __filename = fileURLToPath(import.meta.url);
@@ -48,7 +49,7 @@ const deployCommands = async () => {
 
     console.log('Successfully reloaded all commands!');
     } catch (error) {
-        console.error('Error deploying commands:', error)
+        logError('Virhe komentoja ladatessa:', error);
     }
 }
 
@@ -130,7 +131,7 @@ async function sendWelcomeMessage(member) {
   );
 
   if (!channel) {
-    console.error(`Kanavaa "${channelName}" ei löytynyt.`);
+    logErrorWithoutCode(`Kanavaa "${channelName}" ei löytynyt.`);
     return;
   }
 
@@ -154,14 +155,13 @@ client.on(Events.InteractionCreate, async interaction => {
     const command = client.commands.get(interaction.commandName);
 
     if (!command) {
-        // console.error(`No command matching ${interaction.commandName} was found.`)
         return;
     }
 
     try {
         await command.execute(interaction);
     } catch (error) {
-        console.error(error);
+        logError('Virhe komentoa suoritettaessa!', error);
         if (interaction.replied || interaction.deferred) {
             await interaction.followUp({ content: 'Virhe komentoa suoritettaessa!', flags: [MessageFlags.Ephemeral]});
         } else {
@@ -171,9 +171,8 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.on('messageCreate', (message) => {
-    const debug = isDebugEnabled();
-    console.log('!testwelcome called, debugging is ' + debug);
-    if (debug && message.content === '!testwelcome') {
+    if (isDebugEnabled() && message.content === '!testwelcome') {
+        logBackend('!testwelcome called, debugging is enabled');
         client.emit('guildMemberAdd', message.member);
     }
 });

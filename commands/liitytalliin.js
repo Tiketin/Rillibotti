@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from 'discord.js';
 import { getTeams } from '../logic/configuration.js';
-import { logCommand } from '../logic/logger.js';
+import { logCommand, logError } from '../logic/logger.js';
 
 const teams = getTeams();
 
@@ -83,7 +83,7 @@ export default {
         flags: MessageFlags.Ephemeral
       });
     } catch (error) {
-      console.error(error);
+      logError('Jotain meni pieleen tallin määrittämisessä.', error);
       await interaction.reply({
         content: 'Jotain meni pieleen tallin määrittämisessä.',
         flags: MessageFlags.Ephemeral

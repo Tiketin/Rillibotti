@@ -1,22 +1,23 @@
 import fs from 'fs/promises';
+import { logBackend, logError, logErrorWithoutCode } from './logger.js';
 
 export async function getDriverStandings(year) {
 
     const savedResponse = await readStandingsFromFile('drivers', year);
 
     if (savedResponse != null) {
-        console.log(`Haetaan vuoden ${year} kuljettajien tulokset tiedostosta.`);
+        logBackend(`Haetaan vuoden ${year} kuljettajien tulokset tiedostosta.`);
         const responseStandingsList = savedResponse.MRData?.StandingsTable?.StandingsLists || [];
         return responseStandingsList[0];
     }
 
     try {
         const url = `https://api.jolpi.ca/ergast/f1/${year}/driverstandings/`;
-        console.log('Rajapintakutsu: '+url);
+        logBackend(`Rajapintakutsu: ${url}`);
 
         const res = await fetch(url);
         if (!res.ok) {
-        console.error(`HTTP-virhe! Status: ${res.status}`);
+        logErrorWithoutCode(`HTTP-virhe! Status: ${res.status}`);
         return null;
         }
 
@@ -27,7 +28,7 @@ export async function getDriverStandings(year) {
         await saveStandingsToFile(data, 'drivers', year);
         return standingsList[0];
     } catch (err) {
-        console.error('Haku epäonnistui:', err);
+        logError('Haku epäonnistui: ', err);
         return null;
     }
 }
@@ -37,17 +38,17 @@ export async function getConstructorStandings(year) {
     const savedResponse = await readStandingsFromFile('constructors', year);
     
     if (savedResponse != null) {
-        console.log(`Haetaan vuoden ${year} valmistajien tulokset tiedostosta.`);
+        logBackend(`Haetaan vuoden ${year} valmistajien tulokset tiedostosta.`);
         const responseStandingsList = savedResponse.MRData?.StandingsTable?.StandingsLists || [];
         return responseStandingsList[0];
     }
 
     try {
         const url = `https://api.jolpi.ca/ergast/f1/${year}/constructorstandings/`;
-        console.log('Rajapintakutsu: '+url);
+        logBackend(`Rajapintakutsu: ${url}`);
         const res = await fetch(url);
         if (!res.ok) {
-            console.error(`HTTP-virhe! Status: ${res.status}`);
+            logErrorWithoutCode(`HTTP-virhe! Status: ${res.status}`);
             return null;
         }
 
@@ -58,7 +59,7 @@ export async function getConstructorStandings(year) {
         await saveStandingsToFile(data, 'constructors', year);
         return standingsList[0];
     } catch (err) {
-        console.error('Haku epäonnistui:', err);
+        logError('Haku epäonnistui: ', err);
         return null;
     }
 }
@@ -66,7 +67,7 @@ export async function getConstructorStandings(year) {
 async function saveStandingsToFile(data, championship, year) {
     const currentYear = new Date().getFullYear();
     if (year === currentYear) {
-        console.log('Kuluvan vuoden tuloksia ei tallenneta tiedostoon.');
+        logBackend(`Kuluvan vuoden (${year}) tuloksia ei tallenneta tiedostoon.`);
         return;
     }
     const dirPath = `./data/championships/${championship}`;
@@ -79,7 +80,7 @@ async function saveStandingsToFile(data, championship, year) {
 async function readStandingsFromFile(championship, year) {
     const currentYear = new Date().getFullYear();
     if (year === currentYear) {
-        console.log('Kuluvan vuoden tulokset haetaan aina rajapinnasta.');
+        logBackend(`Kuluvan vuoden (${year}) tulokset haetaan aina rajapinnasta.`);
         return null;
     }
     const filePath = `./data/championships/${championship}/${year}.json`
